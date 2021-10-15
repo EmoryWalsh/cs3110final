@@ -15,3 +15,5 @@ val init_board : t
 type result =
   | Legal of t
   | Illegal
+
+val board_state : t -> string
