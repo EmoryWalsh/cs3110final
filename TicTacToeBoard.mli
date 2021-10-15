@@ -7,6 +7,11 @@
 type t
 (** The abstract type of values representing the game state. *)
 
-type players
+val init_board : t
+(** [init_state] is the initial state of a game of tic tac toe. It has
+    no tokens placed on the board and each square has a index 1-9. *)
 
-type player
+(** The type representing the result of an attempted movement. *)
+type result =
+  | Legal of t
+  | Illegal
