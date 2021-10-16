@@ -1,4 +1,4 @@
-let hours_worked_ms1 = 3
+let hours_worked_ms1 = 9
 
 let hours_worked_ms2 = 0
 

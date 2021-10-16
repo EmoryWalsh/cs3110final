@@ -39,8 +39,8 @@ let piece_match square =
 
 let player_match p =
   match p with
-  | X -> "X"
-  | O -> "O"
+  | X -> 'X'
+  | O -> 'O'
 
 (** Creates the string representation of a row of a tic tac toe board. *)
 let row_state row =
@@ -88,5 +88,28 @@ let is_open i state =
   | Played p -> false
   | Nil int -> true
 
-let place_piece player i state =
-  raise (Failure "Unimplemented: TicTacToeBoard.place_piece")
+let next_player p =
+  match p with
+  | X -> O
+  | O -> X
+
+let char_to_player c =
+  match c with
+  | 'X' -> X
+  | 'O' -> O
+  | _ -> raise MalformedBoard
+
+let place_piece (player : char) i state =
+  if is_open i state then
+    let p_player = char_to_player player in
+    let square = find_square i state in
+    let mapped =
+      List.map
+        (fun row ->
+          List.map
+            (fun el -> if el = square then Played p_player else el)
+            row)
+        state
+    in
+    Legal mapped
+  else Illegal

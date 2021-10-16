@@ -19,11 +19,14 @@ val init_board : t
 (** [init_state] is the initial state of a game of tic tac toe. It has
     no tokens placed on the board and each square has a index 1-9. *)
 
+val next_player : players -> players
+(** [next_player p] is the next player to make a move. *)
+
 val test_board : t
 (** [test_board] is an example of a board with some spots filled as an
     example. *)
 
-val player_match : players -> string
+val player_match : players -> char
 (** [player_match p] is the string representation of a player. *)
 
 (** The type representing the result of an attempted movement. *)
