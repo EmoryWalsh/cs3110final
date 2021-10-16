@@ -1,1 +1,1 @@
-(* val play : 'a *)
+val play : unit

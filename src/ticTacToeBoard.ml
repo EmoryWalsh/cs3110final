@@ -26,17 +26,21 @@ let test_board =
     [ Nil 7; Played X; Nil 9 ];
   ]
 
-let player = X
-
 type result =
   | Legal of t
   | Illegal
 
+(** [piece_match square] matches the contents of a square to a string. *)
 let piece_match square =
   match square with
   | Played X -> "X"
   | Played O -> "O"
   | Nil i -> string_of_int i
+
+let player_match p =
+  match p with
+  | X -> "X"
+  | O -> "O"
 
 (** Creates the string representation of a row of a tic tac toe board. *)
 let row_state row =

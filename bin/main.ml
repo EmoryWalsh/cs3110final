@@ -1,7 +1,7 @@
 open Game
 open PlayTicTacToe
 open TicTacToeBoard
-let play_game = raise (Failure "Unimplemented: Main.play_game")(* PlayTicTacToe.play *)
+ let play_game = raise (Failure "Unimplemented: Main.play_game")(*PlayTicTacToe.play *)
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
   ANSITerminal.print_string [ ANSITerminal.red ]
@@ -12,7 +12,7 @@ let main () =
   | exception End_of_file -> ()
   | _ ->
       print_endline "Failure unimplemented";
-      play_game
+      play
 
 (* Execute the game engine. *)
 let () = main ()
