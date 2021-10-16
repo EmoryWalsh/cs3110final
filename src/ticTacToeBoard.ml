@@ -85,4 +85,18 @@ let is_open i state =
   | Nil int -> true
 
 let place_piece player i state =
-  raise (Failure "Unimplemented: TicTacToeBoard.place_piece")
+  if is_open i state then
+    let square = find_square i state in 
+    let mapped =List.map (fun row -> (List.map (fun el ->
+      if el=square then player else el) row) 
+    ) state in Legal(mapped)
+  else Illegal
+
+
+
+let list_representation (state : t) = 
+  List.map (List.map (fun x -> 
+    match x with 
+    |Nil i -> string_of_int i
+    |Played p -> if p = X then "X" else "O"
+    ) ) state

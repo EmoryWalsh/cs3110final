@@ -32,3 +32,7 @@ val place_piece : char -> int -> t -> t
 (** [place_piece player i state] is the new state representation when
     [player] adds a piece to board [state] at index [i]. Raises
     [InvalidIndex i] when [i] is out of bounds or already played. *)
+
+val list_representation : t -> string list list
+(** [list_representation state] is the list representation of the 
+    tic tac toe board state *)
