@@ -188,3 +188,63 @@ let place_piece (player : char) i state =
     else Illegal
   with
   | _ -> Illegal
+
+type winner =
+  | X
+  | O
+  | Nil
+
+(** [pp_list pp_elt lst] pretty-prints list [lst], using [pp_elt] to
+    pretty-print each element of [lst]. *)
+let pp_list pp_elt lst =
+  let pp_elts lst =
+    let rec loop n acc = function
+      | [] -> acc
+      | [ h ] -> acc ^ pp_elt h
+      | h1 :: (h2 :: t as t') ->
+          if n = 100 then acc ^ "..." (* stop printing long list *)
+          else loop (n + 1) (acc ^ pp_elt h1 ^ "; ") t'
+    in
+    loop 0 "" lst
+  in
+  "[" ^ pp_elts lst ^ "]"
+
+let is_subset (wins : int list list) (lst : int list) =
+  let tf_lst =
+    List.map
+      (fun row ->
+        match row with
+        | [ e1; e2; e3 ] ->
+            if
+              List.exists (fun x -> x = e1) lst
+              && List.exists (fun x -> x = e2) lst
+              && List.exists (fun x -> x = e3) lst
+            then true
+            else false
+        | _ -> raise MalformedBoard)
+      wins
+  in
+  List.fold_left (fun acc row -> acc || row) false tf_lst
+
+let is_winning_state lst =
+  let wins =
+    [
+      [ 1; 2; 3 ];
+      [ 4; 5; 6 ];
+      [ 7; 8; 9 ];
+      [ 1; 4; 7 ];
+      [ 2; 5; 8 ];
+      [ 3; 6; 9 ];
+      [ 1; 5; 9 ];
+      [ 3; 5; 7 ];
+    ]
+  in
+  is_subset wins lst
+
+let is_winner state =
+  let move_lst = plays state in
+  match move_lst with
+  | { x; o; nil } ->
+      if is_winning_state x then X
+      else if is_winning_state o then O
+      else Nil

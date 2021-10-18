@@ -19,31 +19,31 @@ let check_str s =
   with
   | Failure _ -> false
 
-type winner =
-  | X
-  | O
-  | Nil
-
-let is_winning_state lst =
-  let wins =
-    [
-      [ 0; 1; 2 ];
-      [ 3; 4; 5 ];
-      [ 6; 7; 8 ];
-      [ 0; 3; 6 ];
-      [ 1; 4; 7 ];
-      [ 2; 5; 8 ];
-      [ 0; 4; 8 ];
-      [ 2; 4; 6 ];
-    ]
-  in
-  false
-
-(* * [is_winner s p] checks whether either player has won the game and
-   returns the player who has won or nil if neither have won. *)
-(* let is_winner state player = match state with | x *)
-
 (** [do_move s p] attempts to place the piece*)
+(* let rec do_move state (player : players) = (* let winner = is_winner
+   state in match winner with | X -> ANSITerminal.print_string [
+   ANSITerminal.red ] "Congratulations player X, you have won the game.
+   \n" | O -> ANSITerminal.print_string [ ANSITerminal.red ]
+   "Congratulations player O, you have won the game. \n" | Nil -> begin
+   *) ANSITerminal.print_string [ ANSITerminal.red ] ("The board
+   currently looks like: \n" ^ board_state state ^ "\nPlayer " ^
+   Char.escaped (player_match player) ^ ", please choose the square
+   where you would like to place your \ piece."); print_string "> ";
+   match read_line () with | exception End_of_file -> () | "quit" ->
+   ANSITerminal.print_string [ ANSITerminal.red ] "Goodbye. Thanks for
+   playing my game.\n" | move -> print_string move; if check_str move
+   then let move_int = int_of_string move in let new_state = place_piece
+   (player_match player) move_int state in match new_state with |
+   Illegal -> ANSITerminal.print_string [ ANSITerminal.red ] "Not a
+   legal move.\n"; do_move state player | Legal t -> begin let winner =
+   is_winner state in match winner with | X -> ANSITerminal.print_string
+   [ ANSITerminal.red ] "Congratulations player X, you have won the
+   game. \n" | O -> ANSITerminal.print_string [ ANSITerminal.red ]
+   "Congratulations player O, you have won the game. \n" | Nil ->
+   do_move state player end else ANSITerminal.print_string [
+   ANSITerminal.red ] "Not a legal move because your input is not an
+   integer.\n" *)
+
 let rec do_move state (player : players) =
   ANSITerminal.print_string [ ANSITerminal.red ]
     ("The board currently looks like: \n" ^ board_state state
@@ -68,11 +68,25 @@ let rec do_move state (player : players) =
             ANSITerminal.print_string [ ANSITerminal.red ]
               "Not a legal move.\n";
             do_move state player
-        | Legal t -> do_move t (next_player player)
+        | Legal t -> (
+            let winner = is_winner t in
+            match winner with
+            | X ->
+                ANSITerminal.print_string [ ANSITerminal.red ]
+                  (board_state t
+                 ^ "\n\
+                    Congratulations player X, you have won the game. \n"
+                  )
+            | O ->
+                ANSITerminal.print_string [ ANSITerminal.red ]
+                  (board_state t
+                 ^ "\n\
+                    Congratulations player O, you have won the game. \n"
+                  )
+            | Nil -> do_move t (next_player player))
       else
         ANSITerminal.print_string [ ANSITerminal.red ]
-          "Not a legal move because your input is not an integer.\n";
-      do_move state player
+          "Not a legal move because your input is not an integer.\n"
 
 let play =
   ANSITerminal.print_string [ ANSITerminal.red ] instructions;

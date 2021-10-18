@@ -17,6 +17,11 @@ type players =
   | X
   | O  (** Represents the different players of the game. *)
 
+type winner =
+  | X
+  | O
+  | Nil  (** Represents the winner of the game. *)
+
 val init_board : t
 (** [init_state] is the initial state of a game of tic tac toe. It has
     no tokens placed on the board and each square has a index 1-9. *)
@@ -53,3 +58,7 @@ val place_piece : char -> int -> t -> result
 (** [place_piece player i state] is the new state representation when
     [player] adds a piece to board [state] at index [i]. Raises
     [InvalidIndex i] when [i] is out of bounds or already played. *)
+
+val is_winner : t -> winner
+(** [is_winner s] checks whether either player has won the game in state
+    [s] and returns the player who has won or nil if neither have won. *)
