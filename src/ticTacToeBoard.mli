@@ -8,8 +8,10 @@ type t
 (** The abstract type of values representing the game state. *)
 
 exception MalformedBoard
+(** Raised when the board is formatted incorrectly. *)
 
 exception InvalidIndex of int
+(** Raised when an invalid int is given to place a piece. *)
 
 type players =
   | X
@@ -29,10 +31,19 @@ val test_board : t
 val player_match : players -> char
 (** [player_match p] is the string representation of a player. *)
 
-(** The type representing the result of an attempted movement. *)
 type result =
   | Legal of t
   | Illegal
+      (** The type representing the result of an attempted movement. *)
+
+type plays = {
+  x : int list;
+  o : int list;
+  nil : int list;
+}
+(** Data type representing the plays made by each player*)
+
+val plays : t -> plays
 
 val board_state : t -> string
 (** [board_state s] creates a string representation of a tic tac toe

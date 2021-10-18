@@ -3,7 +3,7 @@ type players =
   | O
 
 type square =
-  | Played of players
+  | Played of (players * int)
   | Nil of int
 
 type t = square list list
@@ -21,20 +21,92 @@ let init_board =
 
 let test_board =
   [
-    [ Played O; Played O; Nil 3 ];
-    [ Nil 4; Played X; Nil 6 ];
-    [ Nil 7; Played X; Nil 9 ];
+    [ Played (O, 1); Played (O, 2); Nil 3 ];
+    [ Nil 4; Played (X, 5); Nil 6 ];
+    [ Nil 7; Played (X, 8); Nil 9 ];
   ]
 
 type result =
   | Legal of t
   | Illegal
 
+type plays = {
+  x : int list;
+  o : int list;
+  nil : int list;
+}
+
+(** [list_os s] creates a list with the indices of each square that is
+    an O. *)
+let list_os state =
+  let lst = List.flatten state in
+  let filtered =
+    List.filter
+      (fun x ->
+        match x with
+        | Played p -> (
+            match p with
+            | O, _ -> true
+            | X, _ -> false)
+        | Nil i -> false)
+      lst
+  in
+  List.map
+    (fun x ->
+      match x with
+      | Played (O, i) -> i
+      | _ -> raise MalformedBoard)
+    filtered
+
+(** [list_xs s] creates a list with the indices of each square that is
+    an X. *)
+let list_xs state =
+  let lst = List.flatten state in
+  let filtered =
+    List.filter
+      (fun x ->
+        match x with
+        | Played p -> (
+            match p with
+            | O, _ -> false
+            | X, _ -> true)
+        | Nil i -> false)
+      lst
+  in
+  List.map
+    (fun x ->
+      match x with
+      | Played (X, i) -> i
+      | _ -> raise MalformedBoard)
+    filtered
+
+(** [list_nils s] creates a list with the indices of each square that is
+    Nil. *)
+let list_nils state =
+  let lst = List.flatten state in
+  let filtered =
+    List.filter
+      (fun x ->
+        match x with
+        | Played _ -> false
+        | Nil i -> true)
+      lst
+  in
+  List.map
+    (fun x ->
+      match x with
+      | Nil x -> x
+      | Played p -> raise MalformedBoard)
+    filtered
+
+let plays state =
+  { x = list_xs state; o = list_os state; nil = list_nils state }
+
 (** [piece_match square] matches the contents of a square to a string. *)
 let piece_match square =
   match square with
-  | Played X -> "X"
-  | Played O -> "O"
+  | Played (X, _) -> "X"
+  | Played (O, _) -> "O"
   | Nil i -> string_of_int i
 
 let player_match p =
@@ -52,7 +124,7 @@ let row_state row =
       | _ -> raise MalformedBoard)
   | _ -> raise MalformedBoard
 
-let rec board_state board =
+let board_state board =
   match board with
   | [ r1; r2; r3 ] ->
       begin
@@ -65,7 +137,6 @@ let rec board_state board =
     [MalformedBoard] if the board is formatted incorrectly. Raises
     [InvalidIndex i] if the index is out of bounds. *)
 let find_square i (state : t) =
-  (* raise (Failure "Unimplemented: TicTacToeBoard.place_piece") *)
   match state with
   | [ [ e1; e2; e3 ]; [ e4; e5; e6 ]; [ e7; e8; e9 ] ] ->
       if i = 1 then e1
@@ -100,16 +171,20 @@ let char_to_player c =
   | _ -> raise MalformedBoard
 
 let place_piece (player : char) i state =
-  if is_open i state then
-    let p_player = char_to_player player in
-    let square = find_square i state in
-    let mapped =
-      List.map
-        (fun row ->
-          List.map
-            (fun el -> if el = square then Played p_player else el)
-            row)
-        state
-    in
-    Legal mapped
-  else Illegal
+  try
+    if is_open i state then
+      let p_player = char_to_player player in
+      let square = find_square i state in
+      let mapped =
+        List.map
+          (fun row ->
+            List.map
+              (fun el ->
+                if el = square then Played (p_player, i) else el)
+              row)
+          state
+      in
+      Legal mapped
+    else Illegal
+  with
+  | _ -> Illegal

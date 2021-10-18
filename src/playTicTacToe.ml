@@ -8,8 +8,10 @@ let instructions =
    second is O. Players alternate placing Xs and Os on the game board \
    until either oppent has three in a row or all nine squares are \
    filled. X always goes first, and in the event that no one has three \
-   in a row, the stalemate is called a cat game."
+   in a row, the stalemate is called a cat game. Player X will go \
+   first, and player O will follow.\n\n"
 
+(** [check_str s] checks to see whether [s] is the string of an integer. *)
 let check_str s =
   try
     int_of_string s |> ignore;
@@ -17,8 +19,29 @@ let check_str s =
   with
   | Failure _ -> false
 
-(* val do_move : int -> TicTacToeBoard.t -> TicTacToeBoard.players ->
-   unit *)
+let is_winning_state lst =
+  let wins =
+    [
+      [ 0; 1; 2 ];
+      [ 3; 4; 5 ];
+      [ 6; 7; 8 ];
+      [ 0; 3; 6 ];
+      [ 1; 4; 7 ];
+      [ 2; 5; 8 ];
+      [ 0; 4; 8 ];
+      [ 2; 4; 6 ];
+    ]
+  in
+  false
+
+(* * [is_winner s p] checks whether either player has won the game and
+   returns the player who has won or nil if neither have won. *)
+(* let is_winner state player = let plays = plays state in match plays
+   with | { x; o; nil } -> if player = X then if is_winning_state x then
+   X else if player = O then if is_winning_state o then O else Nil 0
+   else Nil 0 else Nil 0 *)
+
+(** [do_move s p] attempts to place the piece*)
 let rec do_move state (player : players) =
   ANSITerminal.print_string [ ANSITerminal.red ]
     ("The board currently looks like: \n" ^ board_state state
@@ -52,4 +75,3 @@ let rec do_move state (player : players) =
 let play =
   ANSITerminal.print_string [ ANSITerminal.red ] instructions;
   do_move init_board X
-(* raise (Failure "Unimplemented: PlayTicTacToe.play") *)
