@@ -63,9 +63,10 @@ let rec do_move state (player : players) =
                   (board_state t
                  ^ "This is a cat game. There is no winner.")
             | Nil -> do_move t (next_player player))
-      else
+      else (
         ANSITerminal.print_string [ ANSITerminal.red ]
-          "Not a legal move because your input is not an integer.\n"
+          "Not a legal move because your input is not an integer.\n";
+        do_move state player)
 
 let play =
   ANSITerminal.print_string [ ANSITerminal.red ] instructions;
