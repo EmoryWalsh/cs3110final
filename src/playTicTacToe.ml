@@ -58,6 +58,10 @@ let rec do_move state (player : players) =
                  ^ "\n\
                     Congratulations player O, you have won the game. \n"
                   )
+            | Tie ->
+                ANSITerminal.print_string [ ANSITerminal.red ]
+                  (board_state t
+                 ^ "This is a cat game. There is no winner.")
             | Nil -> do_move t (next_player player))
       else
         ANSITerminal.print_string [ ANSITerminal.red ]

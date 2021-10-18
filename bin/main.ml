@@ -1,7 +1,9 @@
 open Game
 open PlayTicTacToe
- let play_game = play
+
 (** [main ()] prompts for the game to play, then starts it. *)
+let play_game = play
+
 let main () =
   ANSITerminal.print_string [ ANSITerminal.red ]
     "\n\nWelcome to our 3110 Final Project.\n";
@@ -11,8 +13,8 @@ let main () =
   | exception End_of_file -> ()
   | _ ->
       print_endline "Failure unimplemented";
-      
-      play
+
+      play_game
 
 (* Execute the game engine. *)
 let () = main ()

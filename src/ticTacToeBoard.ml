@@ -192,6 +192,7 @@ let place_piece (player : char) i state =
 type winner =
   | X
   | O
+  | Tie
   | Nil
 
 (** [pp_list pp_elt lst] pretty-prints list [lst], using [pp_elt] to
@@ -247,4 +248,5 @@ let is_winner state =
   | { x; o; nil } ->
       if is_winning_state x then X
       else if is_winning_state o then O
+      else if nil = [] then Tie
       else Nil

@@ -20,6 +20,7 @@ type players =
 type winner =
   | X
   | O
+  | Tie
   | Nil  (** Represents the winner of the game. *)
 
 val init_board : t
