@@ -76,6 +76,9 @@ let plays_tests =
     plays_test "Empty Board"
       { o = []; x = []; nil = [ 1; 2; 3; 4; 5; 6; 7; 8; 9 ] }
       init_board;
+    plays_test "Test Board"
+      { o = [ 1; 2 ]; x = [ 5; 8 ]; nil = [ 3; 4; 6; 7; 9 ] }
+      test_board;
   ]
 
 (* let place_piece_test name player i exp state = *)

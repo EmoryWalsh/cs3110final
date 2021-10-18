@@ -19,6 +19,11 @@ let check_str s =
   with
   | Failure _ -> false
 
+type winner =
+  | X
+  | O
+  | Nil
+
 let is_winning_state lst =
   let wins =
     [
@@ -36,10 +41,7 @@ let is_winning_state lst =
 
 (* * [is_winner s p] checks whether either player has won the game and
    returns the player who has won or nil if neither have won. *)
-(* let is_winner state player = let plays = plays state in match plays
-   with | { x; o; nil } -> if player = X then if is_winning_state x then
-   X else if player = O then if is_winning_state o then O else Nil 0
-   else Nil 0 else Nil 0 *)
+(* let is_winner state player = match state with | x *)
 
 (** [do_move s p] attempts to place the piece*)
 let rec do_move state (player : players) =
