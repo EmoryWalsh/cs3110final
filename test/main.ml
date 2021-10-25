@@ -1,6 +1,7 @@
 open OUnit2
 open Game
 open TicTacToeBoard
+open HangmanBoard
 
 (* ************ TIC TAC TOE TESTS ************ *)
 
@@ -91,7 +92,72 @@ let ttt_tests =
 
 (* ************ END OF TIC TAC TOE TESTS ************ *)
 
-let hangman_tests = []
+let empty_hangman_repr = "  _____              
+|   |
+|
+|
+|
+|   
+----- 
+
+
+_  _  _  _
+
+You have 8 guesses left.
+
+"
+
+let correct_guess_hangman_repr = "  _____              
+|   |
+|
+|
+|
+|   
+----- 
+
+
+_  _  A  _
+
+You have 8 guesses left.
+
+So far, you have guessed: A
+
+"
+
+let wrong_guess_hangman_repr = "  _____
+|   |
+|   O
+|
+| 
+|   
+----- 
+
+
+_  _  A  _
+
+You have 7 guesses left.
+
+So far, you have guessed: B, A
+
+"
+
+let get_t state =
+  match state with
+  | Legal t -> t
+  | _-> failwith "not legal"
+
+
+let repr_board_state_test name exp state =
+  name >:: fun _ -> assert_equal exp (repr_board_state (get_t state))
+
+
+let repr_board_state_tests =
+  [
+    
+  ]
+
+
+let hangman_tests = repr_board_state_tests
 
 let connect_four_tests = []
 

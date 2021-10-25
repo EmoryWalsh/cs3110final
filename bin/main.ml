@@ -1,5 +1,5 @@
 open Game
-open PlayTicTacToe
+open PlayHangman
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let play_game = play
