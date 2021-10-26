@@ -1,2 +1,2 @@
-val play : unit
-(** [play] starts a game of Tic Tac Toe *)
+val play : unit -> unit
+(** [play] starts a game of Hangman *)

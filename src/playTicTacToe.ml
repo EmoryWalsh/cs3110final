@@ -68,6 +68,6 @@ let rec do_move state (player : players) =
           "Not a legal move because your input is not an integer.\n";
         do_move state player)
 
-let play =
+let play () =
   ANSITerminal.print_string [ ANSITerminal.red ] instructions;
   do_move init_board X
