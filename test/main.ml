@@ -82,80 +82,82 @@ let plays_tests =
       test_board;
   ]
 
-(* let place_piece_test name player i exp state = *)
+let place_piece_test name player i exp state =
+  let placed = place_piece player i state in
+  name >:: fun _ ->
+  match placed with
+  | Illegal -> assert_equal exp { x = []; o = []; nil = [] }
+  | Legal t -> assert_equal exp (plays t)
 
-(* let place *)
+let t1 = { x = [ 5 ]; o = []; nil = [ 1; 2; 3; 4; 6; 7; 8; 9 ] }
+
+let t2 = { x = [ 5; 8 ]; o = [ 1; 2; 6 ]; nil = [ 3; 4; 7; 9 ] }
+
+let fail_t = { x = []; o = []; nil = [] }
+
+let place_piece_tests =
+  [
+    place_piece_test "Place piece on empty board" 'X' 5 t1 init_board;
+    place_piece_test "Place piece in a full spot" 'X' 2 fail_t
+      test_board;
+    place_piece_test "Place piece on partially full board" 'O' 6 t2
+      test_board;
+    place_piece_test "Place piece on nonexistent square" 'O' 0 fail_t
+      test_board;
+    place_piece_test "Place piece on nonexistent square" 'O' 100 fail_t
+      test_board;
+  ]
 
 let ttt_tests =
   board_state_tests @ next_player_tests @ player_match_tests
-  @ plays_tests
+  @ plays_tests @ place_piece_tests
 
 (* ************ END OF TIC TAC TOE TESTS ************ *)
 
-let empty_hangman_repr = "  _____              
-|   |
-|
-|
-|
-|   
------ 
+let empty_hangman_repr =
+  "  _____              \n\
+   |   |\n\
+   |\n\
+   |\n\
+   |\n\
+   |   \n\
+   ----- \n\n\n\
+   _  _  _  _\n\n\
+   You have 8 guesses left.\n\n"
 
+let correct_guess_hangman_repr =
+  "  _____              \n\
+   |   |\n\
+   |\n\
+   |\n\
+   |\n\
+   |   \n\
+   ----- \n\n\n\
+   _  _  A  _\n\n\
+   You have 8 guesses left.\n\n\
+   So far, you have guessed: A\n\n"
 
-_  _  _  _
-
-You have 8 guesses left.
-
-"
-
-let correct_guess_hangman_repr = "  _____              
-|   |
-|
-|
-|
-|   
------ 
-
-
-_  _  A  _
-
-You have 8 guesses left.
-
-So far, you have guessed: A
-
-"
-
-let wrong_guess_hangman_repr = "  _____
-|   |
-|   O
-|
-| 
-|   
------ 
-
-
-_  _  A  _
-
-You have 7 guesses left.
-
-So far, you have guessed: B, A
-
-"
+let wrong_guess_hangman_repr =
+  "  _____\n\
+   |   |\n\
+   |   O\n\
+   |\n\
+   | \n\
+   |   \n\
+   ----- \n\n\n\
+   _  _  A  _\n\n\
+   You have 7 guesses left.\n\n\
+   So far, you have guessed: B, A\n\n"
 
 let get_t state =
   match state with
   | Legal t -> t
-  | _-> failwith "not legal"
-
+  | _ -> failwith "not legal"
 
 let repr_board_state_test name exp state =
   name >:: fun _ -> assert_equal exp (repr_board_state (get_t state))
 
-
-let repr_board_state_tests =
-  [
-    
-  ]
-
+let repr_board_state_tests = []
 
 let hangman_tests = repr_board_state_tests
 
