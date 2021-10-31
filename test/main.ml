@@ -108,6 +108,17 @@ let place_piece_tests =
       test_board;
   ]
 
+let is_winner_test name lst exp =
+  name >:: fun _ -> assert_equal exp (is_winner lst)
+
+let (TicTacToeBoard.Legal t) = place_piece 'O' 3 test_board
+
+let is_winner_tests =
+  [
+    is_winner_test "Empty board" init_board Nil;
+    is_winner_test "Winning state" t O;
+  ]
+
 let ttt_tests =
   board_state_tests @ next_player_tests @ player_match_tests
   @ plays_tests @ place_piece_tests
