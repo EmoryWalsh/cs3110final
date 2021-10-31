@@ -15,6 +15,9 @@ play:
 check:
 	@bash check.sh
 
+loc:
+	cloc --by-file --include-lang=OCaml .
+
 finalcheck:
 	@bash check.sh final
 
