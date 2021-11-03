@@ -99,7 +99,9 @@ let rec get_word () =
   in
   match valid_word word with
   | true -> word_to_list word
-  | false -> failwith "Sorry, that was an invalid word."
+  | false ->
+      print_string "Sorry, that was an invalid word.";
+      get_word ()
 
 let play () =
   ANSITerminal.print_string [ ANSITerminal.red ] instructions;
