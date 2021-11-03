@@ -16,6 +16,7 @@ let instructions =
 
 let check_char c =
   try
+    if String.length c != 1 then failwith "invalid";
     String.get c 0 |> Char.escaped |> ignore;
     String.get c 0 |> Char.uppercase_ascii |> ignore;
     true
@@ -59,7 +60,7 @@ let rec do_move state =
             else do_move t
       else (
         ANSITerminal.print_string [ ANSITerminal.red ]
-          "Not a legal move because your input is not an integer.\n";
+          "Not a legal move because your input is not a single character A..Z or a..z.\nPlease guess again. \n\n\n";
         do_move state)
 
 let rec convert n w =
@@ -69,9 +70,6 @@ let rec convert n w =
 
 let rec word_to_list w =
   let num = String.length w in
-  let stringlist =
-    List.map (fun x -> Char.escaped x) (convert (num - 1) w)
-  in
   convert (num - 1) (String.uppercase_ascii w)
 
 let valid_word w =
@@ -88,19 +86,19 @@ let valid_word w =
   strlist
 
 let rec get_word () =
-  let word_try =
+  (
     ANSITerminal.print_string [ ANSITerminal.red ]
       "Player 1, please input one word with only letters a..z or A..Z: "
-  in
+  );
   let word = read_line () in
-  let hi =
+  (
     print_string
       "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-  in
+  );
   match valid_word word with
   | true -> word_to_list word
   | false ->
-      print_string "Sorry, that was an invalid word.";
+      print_string "Sorry, that was an invalid word.\n";
       get_word ()
 
 let play () =
