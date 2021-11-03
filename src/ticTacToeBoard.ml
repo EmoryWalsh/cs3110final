@@ -210,6 +210,7 @@ let pp_list pp_elt lst =
   in
   "[" ^ pp_elts lst ^ "]"
 
+(** [is_subset wins lst] returns whether [lst] is a subset of [wins].*)
 let is_subset (wins : int list list) (lst : int list) =
   let tf_lst =
     List.map
