@@ -2,7 +2,9 @@ open Game (* open PlayHangman open PlayTicTacToe *)
 
 let rec prompt_play () =
   ANSITerminal.print_string [ ANSITerminal.red ]
-    "Please enter the name of the game you want to play.\n>";
+    "Please enter the name of the game you want to play. You can \
+     choose from tic tac toe, hangman, and connect 4!\n\
+     >";
   match read_line () with
   | exception End_of_file -> ()
   | game ->
@@ -10,6 +12,8 @@ let rec prompt_play () =
         PlayTicTacToe.play ()
       else if String.lowercase_ascii game = "hangman" then
         PlayHangman.play ()
+      else if String.lowercase_ascii game = "connect 4" then
+        PlayConnectFour.play ()
       else
         ANSITerminal.print_string [ ANSITerminal.red ]
           (game
