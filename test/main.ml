@@ -164,6 +164,8 @@ let ttt_tests =
   @ plays_tests @ place_piece_tests @ is_winner_tests
 
 (* ************ END OF TIC TAC TOE TESTS ************ *)
+
+(* ************ HANGMAN TESTS ************ *)
 open HangmanBoard
 
 let empty_hangman_repr =
@@ -206,14 +208,61 @@ let get_t state =
   | Legal t -> t
   | _ -> failwith "not legal"
 
+let matched t =
+  match t with
+  | Legal t -> t
+  | Illegal i -> init_t
+
 let repr_board_state_test name exp state =
   name >:: fun _ -> assert_equal exp (repr_board_state (get_t state))
 
-let repr_board_state_tests = []
+let repr_board_state_tests =
+  [ (* repr_board_state_test "Empty board" empty_hangman_repr Legal
+       init_t; *) ]
 
-let hangman_tests = repr_board_state_tests
+let print_res res =
+  match res with
+  | Illegal i -> "Illegal: " ^ i
+  | Legal t -> "Legal"
+
+let guess_letter_test name letter st exp =
+  name >:: fun _ ->
+  (* if exp <> guess_letter letter st then print_endline (print_res (*
+     (guess_letter letter st)); *) *)
+  assert_equal exp (guess_letter letter st)
+
+let st1 = HangmanBoard.init_t
+
+let st2 = guess_letter 'E' st1
+
+let st3 = guess_letter 'X' (st2 |> matched)
+
+let guess_letter_tests =
+  [
+    guess_letter_test "Place 1 on init board" 'e' st1
+      (Illegal "\n\n\nYou must enter a character A..Z. \n");
+    guess_letter_test "Place . on init board" '.' st1
+      (Illegal "\n\n\nYou must enter a character A..Z. \n");
+    guess_letter_test "Place e on init board" 'E' st1 st2;
+    guess_letter_test "Place e on board with e" 'E' (st2 |> matched)
+      (Illegal
+         "\n\n\nYou've already guessed this letter. Please retry.\n");
+    guess_letter_test "Place X on board with E" 'X' (st2 |> matched) st3;
+    guess_letter_test "Place tab on init board" '\t' st1
+      (Illegal "\n\n\nYou must enter a character A..Z. \n");
+    guess_letter_test "Place tab on init board" '\t' st1
+      (Illegal "\n\n\nYou must enter a character A..Z. \n");
+  ]
+
+let hangman_tests = repr_board_state_tests @ guess_letter_tests
+
+(* ************ END OF HANGMAN TESTS ************ *)
+
+(* ************ CONNECT 4 TESTS ************ *)
 
 let connect_four_tests = []
+
+(* ************ END OF CONNECT 4 TESTS ************ *)
 
 let suite =
   "test suite for Final Project"
