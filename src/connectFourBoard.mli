@@ -1,4 +1,4 @@
-(** Representation of a Tic Tac Toe Board.
+(** Representation of a Connect4 Board.
 
     This module represents the state of an board as it is being played,
     including the current player, the pieces that have been placed, and
@@ -24,19 +24,19 @@ type winner =
   | Nil  (** Represents the winner of the game. *)
 
 val init_board : t
-(** [init_state] is the initial state of a game of tic tac toe. It has
-    no tokens placed on the board and each square has a index 1-9. *)
+(** [init_board] is the initial state of a game of connect4. It has no
+    tokens placed on the board.*)
 
 val next_player : players -> players
 (** [next_player p] is the next player to make a move. *)
 
 val player_match_string : players -> string
-(** [player_match p] is the string representation of a player to display
-    for game instructions. *)
+(** [player_match_string p] is the string representation of a player to
+    display for game instructions. *)
 
 val player_match_char : players -> char
-(** [player_match p] is the string representation of a player to display
-    on board. *)
+(** [player_match_char p] is the char representation of a player to
+    display on board. *)
 
 type result =
   | Legal of t
@@ -53,14 +53,16 @@ type plays = {
 val plays : t -> plays
 
 val board_state : t -> string
-(** [board_state s] creates a string representation of a tic tac toe
-    board [s]. *)
+(** [board_state board] creates the string representation of an entire
+    connect4 board. *)
 
 val place_piece : char -> int -> t -> result
-(** [place_piece player i state] is the new state representation when
-    [player] adds a piece to board [state] at index [i]. Raises
-    [InvalidIndex i] when [i] is out of bounds or already played. *)
+(** [place_piece player col state] is the new state representation when
+    [player] adds a piece to board [state] at column [col]. Raises
+    [InvalidIndex col] when [col] is out of bounds or if the column is
+    completely filled. *)
 
 val is_winner : t -> winner
-(** [is_winner s] checks whether either player has won the game in state
-    [s] and returns the player who has won or nil if neither have won. *)
+(** [is_winner state] checks whether either player has won the game in
+    state [s] and returns the player who has won or nil if neither have
+    won. *)
