@@ -103,7 +103,7 @@ let piece_match square =
   match square with
   | Played (B, _) -> "B"
   | Played (R, _) -> "R"
-  | Nil i -> ""
+  | Nil i -> " "
   
 
 let player_match_string p =
@@ -127,8 +127,8 @@ let row_state row = match row with | [ e1; e2; e3; e4; e5; e6; e7 ] -> (
   let lst_mapped = List.map piece_match row in
   match lst_mapped with
   | [ e1; e2; e3; e4; e5; e6; e7 ] ->
-      e1 ^  "  | " ^ e2 ^ "  | " ^ e3 ^ "  | " ^ e4 ^ "  | " ^ e5 ^ "  | "
-      ^ e6 ^ "  | " ^ e7 ^ "\n"
+      e1 ^  " | " ^ e2 ^ " | " ^ e3 ^ " | " ^ e4 ^ " | " ^ e5 ^ " | "
+      ^ e6 ^ " | " ^ e7 ^ "\n"
   | _ -> raise MalformedBoard)
 | _ -> raise MalformedBoard
 let board_state board =
