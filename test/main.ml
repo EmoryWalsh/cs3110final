@@ -1,7 +1,6 @@
 open OUnit2
 open Game
 open TicTacToeBoard
-open HangmanBoard
 
 (* ************ TIC TAC TOE TESTS ************ *)
 
@@ -111,19 +110,61 @@ let place_piece_tests =
 let is_winner_test name lst exp =
   name >:: fun _ -> assert_equal exp (is_winner lst)
 
-let (TicTacToeBoard.Legal t) = place_piece 'O' 3 test_board
+let matched t =
+  match t with
+  | Legal t -> t
+  | Illegal -> init_board
+
+let t1 = place_piece 'O' 3 test_board
+
+let t2 = place_piece 'X' 7 test_board
+
+let t3 = place_piece 'X' 7 test_board |> matched |> place_piece 'X' 3
+
+let t4 =
+  place_piece 'X' 1 init_board
+  |> matched |> place_piece 'X' 2 |> matched |> place_piece 'X' 3
+
+let t5 =
+  place_piece 'O' 1 init_board
+  |> matched |> place_piece 'O' 2 |> matched |> place_piece 'O' 3
+
+let t6 =
+  place_piece 'O' 9 init_board
+  |> matched |> place_piece 'O' 8 |> matched |> place_piece 'O' 7
+
+let t7 =
+  place_piece 'X' 9 init_board
+  |> matched |> place_piece 'X' 3 |> matched |> place_piece 'X' 6
+
+let t8 =
+  place_piece 'X' 9 init_board
+  |> matched |> place_piece 'X' 1 |> matched |> place_piece 'X' 5
+
+let t9 =
+  place_piece 'X' 5 init_board
+  |> matched |> place_piece 'X' 3 |> matched |> place_piece 'X' 7
 
 let is_winner_tests =
   [
     is_winner_test "Empty board" init_board Nil;
-    is_winner_test "Winning state" t O;
+    is_winner_test "Not a winning state" (matched t2) Nil;
+    is_winner_test "Winning state" (matched t1) O;
+    is_winner_test "Wnning state" (matched t3) X;
+    is_winner_test "Winning state" (matched t4) X;
+    is_winner_test "Winning state" (matched t5) O;
+    is_winner_test "Winning state" (matched t6) O;
+    is_winner_test "Winning state" (matched t7) X;
+    is_winner_test "Winning state" (matched t8) X;
+    is_winner_test "Winning state" (matched t9) X;
   ]
 
 let ttt_tests =
   board_state_tests @ next_player_tests @ player_match_tests
-  @ plays_tests @ place_piece_tests
+  @ plays_tests @ place_piece_tests @ is_winner_tests
 
 (* ************ END OF TIC TAC TOE TESTS ************ *)
+open HangmanBoard
 
 let empty_hangman_repr =
   "  _____              \n\
