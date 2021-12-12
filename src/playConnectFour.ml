@@ -32,7 +32,7 @@ let rec do_move state (player : players) =
   | exception End_of_file -> ()
   | "quit" ->
       ANSITerminal.print_string [ ANSITerminal.red ]
-        "Goodbye. Thanks for playing my game.\n"
+        "Goodbye. Thanks for playing my game!\n"
   | move ->
       if check_str move then
         let move_int = int_of_string move in
@@ -51,24 +51,25 @@ let rec do_move state (player : players) =
                 ANSITerminal.print_string [ ANSITerminal.red ]
                   (board_state t
                  ^ "\n\
-                    Congratulations player Blue, you have won the game. \n"
-                  )
+                    Congratulations Player Blue, you have won the \
+                    game! :) \n")
             | R ->
                 ANSITerminal.print_string [ ANSITerminal.red ]
                   (board_state t
                  ^ "\n\
-                    Congratulations player Red, you have won the game. \n"
-                  )
+                    Congratulations Player Red, you have won the game! \
+                    :) \n")
             | Tie ->
                 ANSITerminal.print_string [ ANSITerminal.red ]
                   (board_state t
-                 ^ "This\n   is a tie game. There is no winner.")
+                 ^ "This is a tie game. There is no winner.")
             | Nil -> do_move t (next_player player))
       else (
         ANSITerminal.print_string [ ANSITerminal.red ]
           "Not a legal move because your input is not an integer.\n";
         do_move state player)
 
+(** [play] starts a game of Connect4 *)
 let play () =
   ANSITerminal.print_string [ ANSITerminal.red ] instructions;
   do_move init_board B

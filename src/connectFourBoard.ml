@@ -1,16 +1,24 @@
+(** Represents the different players of the game. *)
 type players =
   | B
   | R
 
+(** The abstract type of squares within the game state. *)
 type square =
   | Played of (players * int)
   | Nil of int
 
+(** The abstract type of values representing the game state. *)
 type t = square list list
 
+(** Raised when the board is formatted incorrectly. *)
 exception MalformedBoard
 
+(** Raised when an invalid int is given to place a piece. *)
 exception InvalidIndex of int
+
+(** [init_board] is the initial state of a game of connect4. It has no
+    tokens placed on the board.*)
 let init_board =
   [
     [ Nil 1; Nil 2; Nil 3; Nil 4; Nil 5; Nil 6; Nil 7 ];
@@ -22,10 +30,12 @@ let init_board =
     [ Nil 1; Nil 7; Nil 13; Nil 19; Nil 25; Nil 31; Nil 37 ];
   ]
 
+(** The type representing the result of an attempted movement. *)
 type result =
   | Legal of t
   | Illegal
 
+(** Data type representing the plays made by each player*)
 type plays = {
   b : int list;
   r : int list;
@@ -105,17 +115,22 @@ let piece_match square =
   | Played (R, _) -> "R"
   | Nil i -> " "
   
-
+(** [player_match_string p] is the string representation of a player to 
+display for game instructions. *)
 let player_match_string p =
   match p with
   | B -> "Blue"
   | R -> "Red"
-  let player_match_char p =
-    match p with
-    | B -> 'B'
-    | R -> 'R'
 
-(** Creates the string representation of a row of a connect4 board. *)
+(** [player_match_char p] is the char representation of a player to
+  display on board. *)
+let player_match_char p =
+  match p with
+  | B -> 'B'
+  | R -> 'R'
+
+(** [top_row_state row] creates the string representation of the top row with 
+the column numbers of a connect4 board. *)
 let top_row_state row =
   match row with
   | [ e1; e2; e3; e4; e5; e6; e7 ] -> 
@@ -123,6 +138,8 @@ let top_row_state row =
           ^ "6" ^ " | " ^ "7" ^ "\n"
   | _ -> raise MalformedBoard
 
+(** [row_state row] creates the string representation of each row in the rest 
+of a connect4 board. *)
 let row_state row = match row with | [ e1; e2; e3; e4; e5; e6; e7 ] -> (
   let lst_mapped = List.map piece_match row in
   match lst_mapped with
@@ -131,12 +148,16 @@ let row_state row = match row with | [ e1; e2; e3; e4; e5; e6; e7 ] -> (
       ^ e6 ^ " | " ^ e7 ^ "\n"
   | _ -> raise MalformedBoard)
 | _ -> raise MalformedBoard
+
+(** [board_state board] creates the string representation of an entire 
+connect4 board. *)
 let board_state board =
   match board with
   | [ r1; r2; r3; r4; r5; r6; r7;] ->
       begin
         " " ^ top_row_state r1 ^ " " ^ row_state r2
-        ^ "___|___|___|___|___|___|___\n" ^ " " ^ row_state r3 ^ "___|___|___|___|___|___|___\n" ^ " " ^ row_state r4
+        ^ "___|___|___|___|___|___|___\n" ^ " " ^ row_state r3 
+        ^ "___|___|___|___|___|___|___\n" ^ " " ^ row_state r4
         ^ "___|___|___|___|___|___|___\n" ^" " ^ row_state r5
         ^ "___|___|___|___|___|___|___\n" ^" " ^ row_state r6
         ^ "___|___|___|___|___|___|___\n" ^" " ^ row_state r7
@@ -201,12 +222,16 @@ let find_square i (state : t) =
       else if i = 42 then e42
       else raise (InvalidIndex i)
   | _ -> raise MalformedBoard
+
+(** [square_is_open square] is a bool stating whether [square] is open (Nil) 
+or not (Player) *)
 let square_is_open square =
   match square with
   | Nil s -> true
   | Played p -> false
-(** [is_column_open column state] is a bool stating whether the column labeled
-    [column] is open or not. *)
+
+(** [is_column_open column state] is a bool stating whether the column labeled 
+[column] is open or not. *)
 let is_column_open column state =
   if column = 1 then
     let square = find_square 6 state in
@@ -230,7 +255,13 @@ let is_column_open column state =
     let square = find_square 42 state in
     square_is_open square
   else raise (InvalidIndex column)
-let next_place_in_column col state =
+
+  (** [next_place_in_column col state] returns the index of the square that 
+  is the next open space within the [column] in a given [state] of the board, 
+  starting from looking at the bottom square all the way to the top square. 
+  Raises [InvalidIndex col] when [col] is out of bounds or the column is 
+  already filled up.*)
+  let next_place_in_column col state =
   if col = 1 then 
     (if square_is_open(find_square 1 state) then 1 
     else if square_is_open(find_square 2 state) then 2 
@@ -281,20 +312,24 @@ let next_place_in_column col state =
     else if square_is_open(find_square 41 state) then 41 
     else 42)
   else raise (InvalidIndex col)
-let next_player p =
+
+(** [next_player p] is the next player to make a move. *)
+  let next_player p =
   match p with
   | B -> R
   | R -> B
 
-let char_to_player c =
+(** [char_to_player c] is the player indicated by a given character*)
+  let char_to_player c =
   match c with
   | 'B' -> B
   | 'R' -> R
   | _ -> raise MalformedBoard
 
-(** [place_piece player i state] is the new state representation when
+(** [place_piece player col state] is the new state representation when
     [player] adds a piece to board [state] at column [col]. Raises
-    [InvalidIndex i] when [i] is out of bounds or already played. *)
+    [InvalidIndex col] when [col] is out of bounds or if the column is
+    completely filled. *)
 let place_piece (player : char) col state =
   try
     if is_column_open col state then
@@ -316,6 +351,7 @@ let place_piece (player : char) col state =
   with
   | _ -> Illegal
 
+(** Represents the winner of the game. *)
 type winner = 
   | B
   | R
@@ -340,6 +376,9 @@ let is_subset (wins : int list list) (lst : int list) =
       wins
   in
   List.fold_left (fun acc row -> acc || row) false tf_lst
+
+  (** [is_winning_state lst] returns whether the given lst of 4 squares is a 
+  winning sequence*)
   let is_winning_state lst =
     let wins =
       [
@@ -415,7 +454,8 @@ let is_subset (wins : int list list) (lst : int list) =
       ]
     in
     is_subset wins lst
-
+(** [is_winner state] checks whether either player has won the game in state
+    [s] and returns the player who has won or nil if neither have won. *)
 let is_winner state =
   let move_lst = plays state in
   match move_lst with
