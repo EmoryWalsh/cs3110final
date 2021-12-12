@@ -51,13 +51,13 @@ let rec do_move state (player : players) =
                 ANSITerminal.print_string [ ANSITerminal.red ]
                   (board_state t
                  ^ "\n\
-                    Congratulations player B, you have won the game. \n"
+                    Congratulations player Blue, you have won the game. \n"
                   )
             | R ->
                 ANSITerminal.print_string [ ANSITerminal.red ]
                   (board_state t
                  ^ "\n\
-                    Congratulations player R, you have won the game. \n"
+                    Congratulations player Red, you have won the game. \n"
                   )
             | Tie ->
                 ANSITerminal.print_string [ ANSITerminal.red ]
