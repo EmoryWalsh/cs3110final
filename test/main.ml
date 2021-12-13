@@ -1,3 +1,19 @@
+(***************** TEST PLAN *****************)
+
+(* To test the correctness as our game, we broke it down into three
+   sections, one for each each that we made. Within each game, we tested
+   each of the functions in the mli files to ensure that everything
+   worked as planned. We also manually tested each game, and tried to
+   throw in weird inputs that our code may not expect to deal with.
+   Speciafically, we manually tested the winning states of each game
+   along with boundary/unexpected inputs. To develop our OUnit tests, we
+   mainly utilized black box testing and looked to make sure that inputs
+   gave the expected outputs. We also did some randomized testing just
+   to make sure that everything ran smoothly. Our test suite
+   demonstrates correctness of the system because we spent the time
+   making a well thought out test suite, and everything that couldn't be
+   tested with OUnit, we did manually.*)
+
 open OUnit2
 open Game
 open TicTacToeBoard
@@ -145,6 +161,14 @@ let t9 =
   place_piece 'X' 5 init_board
   |> matched |> place_piece 'X' 3 |> matched |> place_piece 'X' 7
 
+let t10 =
+  place_piece 'X' 1 init_board
+  |> matched |> place_piece 'O' 3 |> matched |> place_piece 'X' 6
+  |> matched |> place_piece 'X' 6 |> matched |> place_piece 'O' 6
+  |> matched |> place_piece 'O' 2 |> matched |> place_piece 'X' 5
+  |> matched |> place_piece 'O' 4 |> matched |> place_piece 'X' 7
+  |> matched |> place_piece 'O' 9 |> matched |> place_piece 'X' 8
+
 let is_winner_tests =
   [
     is_winner_test "Empty board" init_board Nil;
@@ -157,6 +181,7 @@ let is_winner_tests =
     is_winner_test "Winning state" (matched t7) X;
     is_winner_test "Winning state" (matched t8) X;
     is_winner_test "Winning state" (matched t9) X;
+    is_winner_test "Winning state" (matched t10) Nil;
   ]
 
 let ttt_tests =
