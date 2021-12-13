@@ -19,11 +19,25 @@ let rec init_board word =
 let initialize_t w =
   { guessedList = []; board = init_board w; word = w }
 
-let init_t =
+let init_t1 =
   {
     guessedList = [];
     board = [ '_'; '_'; '_'; '_' ];
     word = [ 'W'; 'H'; 'A'; 'T' ];
+  }
+
+let init_t2 =
+  {
+    guessedList = [];
+    board = [ '_'];
+    word = ['H'];
+  }
+
+let init_t3 =
+  {
+    guessedList = [];
+    board = [ '_'; '_'; '_'];
+    word = [ 'A'; 'A'; 'A'];
   }
 
 let zero_guess = "  _____\n  |   |\n  |\n  |\n  |\n  |   \n----- \n"

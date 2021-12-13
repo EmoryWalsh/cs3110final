@@ -169,15 +169,22 @@ let ttt_tests =
 open HangmanBoard
 
 let empty_hangman_repr =
-  "  _____              \n\
-   |   |\n\
-   |\n\
-   |\n\
-   |\n\
-   |   \n\
-   ----- \n\n\n\
-   _  _  _  _\n\n\
-   You have 8 guesses left.\n\n"
+"  _____             
+  |   |
+  |
+  |
+  |
+  |   
+----- 
+
+
+  _  _  _  _
+
+You have 8 guesses left.
+
+So far, you have guessed: 
+
+"
 
 let correct_guess_hangman_repr =
   "  _____              \n\
@@ -211,19 +218,15 @@ let get_t state =
 let matched t =
   match t with
   | Legal t -> t
-  | Illegal i -> init_t
+  | Illegal i -> init_t1
 
 let repr_board_state_test name exp state =
-  name >:: fun _ -> assert_equal exp (repr_board_state (get_t state))
+  name >:: fun _ -> assert_equal exp (repr_board_state state)
 
 let repr_board_state_tests =
   [ (* repr_board_state_test "Empty board" empty_hangman_repr Legal
-       init_t; *) ]
-
-let print_res res =
-  match res with
-  | Illegal i -> "Illegal: " ^ i
-  | Legal t -> "Legal"
+       init_t; *) 
+  ]
 
 let guess_letter_test name letter st exp =
   name >:: fun _ ->
@@ -231,11 +234,29 @@ let guess_letter_test name letter st exp =
      (guess_letter letter st)); *) *)
   assert_equal exp (guess_letter letter st)
 
-let st1 = HangmanBoard.init_t
+let st1 = HangmanBoard.init_t1
 
 let st2 = guess_letter 'E' st1
 
 let st3 = guess_letter 'X' (st2 |> matched)
+
+let st4 = guess_letter 'A' st1
+
+let st5 = guess_letter 'T' 
+  (get_t (guess_letter 'H'
+  (get_t (guess_letter 'W' (get_t st4)))))
+
+let st6 = 
+(guess_letter 'P' 
+(get_t (guess_letter 'X' 
+(get_t (guess_letter 'F' 
+(get_t (guess_letter 'E' 
+(get_t (guess_letter 'D' 
+(get_t (guess_letter 'Z' 
+(get_t (guess_letter 'B'
+(get_t (guess_letter 'C' 
+(get_t st4))))))))))))))))
+
 
 let guess_letter_tests =
   [
@@ -254,7 +275,48 @@ let guess_letter_tests =
       (Illegal "\n\n\nYou must enter a character A..Z. \n");
   ]
 
-let hangman_tests = repr_board_state_tests @ guess_letter_tests
+
+let has_won_test name st exp=
+name >:: fun _ ->
+assert_equal exp (HangmanBoard.has_won st)
+
+let has_won_tests = [
+  has_won_test "has empty board won" st1 false;
+  has_won_test "has one incorrect letter won" (get_t st2) false;
+  has_won_test "has one correct letter won" (get_t st4) false;
+  has_won_test "has completed word won" (get_t st5) true;
+  has_won_test "has ran out of guesses won" (get_t st6) false
+]
+
+let has_lost_test name st exp=
+name >:: fun _ ->
+assert_equal exp (HangmanBoard.has_lost st)
+
+let has_lost_tests = [
+  has_lost_test "has empty board lost" st1 false;
+  has_lost_test "has one incorrect letter lost" (get_t st2) false;
+  has_lost_test "has one correct letter lost" (get_t st4) false;
+  has_lost_test "has completed word lost" (get_t st5) false;
+  has_lost_test "has ran out of guesses lost" (get_t st6) true
+]
+
+let initialize_t_test name word exp =
+name >:: fun _ ->
+assert_equal exp (HangmanBoard.initialize_t word)
+
+let init2 = HangmanBoard.init_t2
+
+let init3 = HangmanBoard.init_t3
+
+let initialize_t_tests = [
+  initialize_t_test "initialize a word" ['W'; 'H';'A'; 'T'] st1;
+  initialize_t_test "initialize a single letter" ['H'] init2;
+  initialize_t_test "initialize repeating letters" ['A'; 'A'; 'A'] init3;
+]
+
+
+let hangman_tests = repr_board_state_tests @ guess_letter_tests 
+@has_won_tests @has_lost_tests @initialize_t_tests
 
 (* ************ END OF HANGMAN TESTS ************ *)
 
