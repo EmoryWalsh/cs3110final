@@ -29,6 +29,27 @@ let init_board =
     [ Nil 2; Nil 8; Nil 14; Nil 20; Nil 26; Nil 32; Nil 38 ];
     [ Nil 1; Nil 7; Nil 13; Nil 19; Nil 25; Nil 31; Nil 37 ];
   ]
+let test_board =
+  [
+    [ Nil 1; Nil 2; Nil 3; Nil 4; Nil 5; Nil 6; Nil 7 ];
+    [ Nil 6; Nil 12; Nil 18; Nil 24; Nil 30; Nil 36; Nil 42 ];
+    [ Nil 5; Nil 11; Nil 17; Nil 23; Nil 29; Nil 35; Nil 41 ];
+    [ Nil 4; Nil 10; Nil 16; Nil 22; Nil 28; Nil 34; Nil 40 ];
+    [ Nil 3; Nil 9; Nil 15; Nil 21; Nil 27; Nil 33; Nil 39 ];
+    [ Played(R,2); Played(B,8); Played(B,14); Nil 20; Nil 26; Played(R,32); Nil 38 ];
+    [ Played(B,1); Played(R,7); Played(R,13); Nil 19; Nil 25; Played(B,31); Nil 37 ];
+  ]
+ let filled_col_board = 
+  [
+    [ Nil 1; Nil 2; Nil 3; Nil 4; Nil 5; Nil 6; Nil 7 ];
+  [ Played(R, 6); Nil 12; Nil 18; Nil 24; Nil 30; Nil 36; Nil 42 ];
+  [ Played(B, 5); Nil 11; Nil 17; Nil 23; Nil 29; Nil 35; Nil 41 ];
+  [ Played(R, 4); Nil 10; Nil 16; Nil 22; Nil 28; Nil 34; Nil 40 ];
+  [ Played(B, 3); Nil 9; Nil 15; Nil 21; Nil 27; Nil 33; Nil 39 ];
+  [ Played(R,2); Played(B,8); Played(B,14); Nil 20; Nil 26; Played(R,32); Nil 38 ];
+  [ Played(B,1); Played(R,7); Played(R,13); Nil 19; Nil 25; Played(B,31); Nil 37 ];
+
+  ]
 
 (** The type representing the result of an attempted movement. *)
 type result =

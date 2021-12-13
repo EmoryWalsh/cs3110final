@@ -259,8 +259,364 @@ let hangman_tests = repr_board_state_tests @ guess_letter_tests
 (* ************ END OF HANGMAN TESTS ************ *)
 
 (* ************ CONNECT 4 TESTS ************ *)
+open ConnectFourBoard
 
-let connect_four_tests = []
+let empty_connect4_board =
+  " 1 | 2 | 3 | 4 | 5 | 6 | 7\n\
+  \   |   |   |   |   |   |  \n\
+   ___|___|___|___|___|___|___\n\
+  \   |   |   |   |   |   |  \n\
+   ___|___|___|___|___|___|___\n\
+  \   |   |   |   |   |   |  \n\
+   ___|___|___|___|___|___|___\n\
+  \   |   |   |   |   |   |  \n\
+   ___|___|___|___|___|___|___\n\
+  \   |   |   |   |   |   |  \n\
+   ___|___|___|___|___|___|___\n\
+  \   |   |   |   |   |   |  \n\
+  \   |   |   |   |   |   |     \n"
+
+let played_connect4_board =
+  " 1 | 2 | 3 | 4 | 5 | 6 | 7\n\
+  \   |   |   |   |   |   |  \n\
+   ___|___|___|___|___|___|___\n\
+  \   |   |   |   |   |   |  \n\
+   ___|___|___|___|___|___|___\n\
+  \   |   |   |   |   |   |  \n\
+   ___|___|___|___|___|___|___\n\
+  \   |   |   |   |   |   |  \n\
+   ___|___|___|___|___|___|___\n\
+  \ R | B | B |   |   | R |  \n\
+   ___|___|___|___|___|___|___\n\
+  \ B | R | R |   |   | B |  \n\
+  \   |   |   |   |   |   |     \n"
+
+let connect_board_state_test name exp state =
+  name >:: fun _ -> assert_equal exp (board_state state)
+
+let connect_board_state_tests =
+  [
+    connect_board_state_test "Empty Connect Board" empty_connect4_board
+      init_board;
+    connect_board_state_test "Played Connect Board"
+      played_connect4_board test_board;
+  ]
+
+let connect_next_player_test name exp p =
+  name >:: fun _ -> assert_equal exp (next_player p)
+
+let connect_next_player_tests =
+  [
+    connect_next_player_test "Player after B is R" R B;
+    connect_next_player_test "Player after R is B" B R;
+  ]
+
+let connect_player_match_string_test name exp p =
+  name >:: fun _ -> assert_equal exp (player_match_string p)
+
+let connect_player_match_string_tests =
+  [
+    connect_player_match_string_test "Player B is Blue" "Blue" B;
+    connect_player_match_string_test "Player R is Red" "Red" R;
+  ]
+
+let connect_player_match_char_test name exp p =
+  name >:: fun _ -> assert_equal exp (player_match_char p)
+
+let connect_player_match_char_tests =
+  [
+    connect_player_match_char_test "Player B is B" 'B' B;
+    connect_player_match_char_test "Player R is R" 'R' R;
+  ]
+
+let connect_cmp_set_like_lists lst1 lst2 =
+  let uniq1 = List.sort compare lst1 in
+  let uniq2 = List.sort compare lst2 in
+  List.length lst1 = List.length uniq1
+  && List.length lst2 = List.length uniq2
+  && uniq1 = uniq2
+
+let connect_plays_test name exp state =
+  let p = plays state in
+  name >:: fun _ ->
+  assert_equal
+    (connect_cmp_set_like_lists p.b exp.b
+    && connect_cmp_set_like_lists p.r exp.r
+    && connect_cmp_set_like_lists p.nil exp.nil)
+    true
+
+let connect_plays_tests =
+  [
+    connect_plays_test "Empty Board Plays"
+      {
+        b = [];
+        r = [];
+        nil =
+          [
+            1;
+            2;
+            3;
+            4;
+            5;
+            6;
+            7;
+            6;
+            12;
+            18;
+            24;
+            30;
+            36;
+            42;
+            5;
+            11;
+            17;
+            23;
+            29;
+            35;
+            41;
+            4;
+            10;
+            16;
+            22;
+            28;
+            34;
+            40;
+            3;
+            9;
+            15;
+            21;
+            27;
+            33;
+            39;
+            2;
+            8;
+            14;
+            20;
+            26;
+            32;
+            38;
+            1;
+            7;
+            13;
+            19;
+            25;
+            31;
+            37;
+          ];
+      }
+      init_board;
+    connect_plays_test "Test Board Plays"
+      {
+        b = [ 8; 14; 1; 31 ];
+        r = [ 2; 32; 7; 13 ];
+        nil =
+          [
+            1;
+            2;
+            3;
+            4;
+            5;
+            6;
+            7;
+            6;
+            12;
+            18;
+            24;
+            30;
+            36;
+            42;
+            5;
+            11;
+            17;
+            23;
+            29;
+            35;
+            41;
+            4;
+            10;
+            16;
+            22;
+            28;
+            34;
+            40;
+            3;
+            9;
+            15;
+            21;
+            27;
+            33;
+            39;
+            20;
+            26;
+            38;
+            19;
+            25;
+            37;
+          ];
+      }
+      test_board;
+  ]
+
+let place_piece_test name player col exp state =
+  let placed = place_piece player col state in
+  name >:: fun _ ->
+  match placed with
+  | Illegal -> assert_equal exp { b = []; r = []; nil = [] }
+  | Legal t -> assert_equal exp (plays t)
+
+let c1 =
+  {
+    b = [ 19 ];
+    r = [];
+    nil =
+      [
+        1;
+        2;
+        3;
+        4;
+        5;
+        6;
+        7;
+        6;
+        12;
+        18;
+        24;
+        30;
+        36;
+        42;
+        5;
+        11;
+        17;
+        23;
+        29;
+        35;
+        41;
+        4;
+        10;
+        16;
+        22;
+        28;
+        34;
+        40;
+        3;
+        9;
+        15;
+        21;
+        27;
+        33;
+        39;
+        2;
+        8;
+        14;
+        20;
+        26;
+        32;
+        38;
+        1;
+        7;
+        13;
+        25;
+        31;
+        37;
+      ];
+  }
+
+let c2 =
+  {
+    b = [ 9; 8; 14; 1; 31 ];
+    r = [ 2; 32; 7; 13 ];
+    nil =
+      [
+        1;
+        2;
+        3;
+        4;
+        5;
+        6;
+        7;
+        6;
+        12;
+        18;
+        24;
+        30;
+        36;
+        42;
+        5;
+        11;
+        17;
+        23;
+        29;
+        35;
+        41;
+        4;
+        10;
+        16;
+        22;
+        28;
+        34;
+        40;
+        3;
+        15;
+        21;
+        27;
+        33;
+        39;
+        20;
+        26;
+        38;
+        19;
+        25;
+        37;
+      ];
+  }
+
+let fail_c = { b = []; r = []; nil = [] }
+
+let place_piece_tests =
+  [
+    place_piece_test "Place B in col 4 in empty board" 'B' 4 c1
+      init_board;
+    place_piece_test "Place B in col 2 in partially played board" 'B' 2
+      c2 test_board;
+    place_piece_test "Place R in a filled col 1" 'R' 1 fail_c
+      filled_col_board;
+    place_piece_test "Place B in a nonexisting col" 'B' 0 fail_c
+      test_board;
+    place_piece_test "Place R in a nonexisting col" 'R' 8 fail_c
+      test_board;
+  ]
+
+let connect_is_winner_test name lst exp =
+  name >:: fun _ -> assert_equal exp (is_winner lst)
+
+let connect_matched t =
+  match t with
+  | Legal t -> t
+  | Illegal -> init_board
+
+let b_win =
+  place_piece 'B' 3 test_board
+  |> connect_matched |> place_piece 'R' 4 |> connect_matched
+  |> place_piece 'B' 4 |> connect_matched |> place_piece 'R' 4
+  |> connect_matched |> place_piece 'B' 4
+
+let r_win =
+  place_piece 'B' 2 filled_col_board
+  |> connect_matched |> place_piece 'R' 4 |> connect_matched
+  |> place_piece 'B' 7 |> connect_matched |> place_piece 'R' 5
+
+let connect_is_winner_tests =
+  [
+    connect_is_winner_test "Empty board" init_board Nil;
+    connect_is_winner_test "Not a winning state" test_board Nil;
+    connect_is_winner_test "B wins" (connect_matched b_win) B;
+    connect_is_winner_test "R wins" (connect_matched r_win) R;
+  ]
+
+let connect_four_tests =
+  connect_board_state_tests @ connect_next_player_tests
+  @ connect_player_match_string_tests @ connect_player_match_char_tests
+  @ connect_plays_tests @ place_piece_tests @ connect_is_winner_tests
 
 (* ************ END OF CONNECT 4 TESTS ************ *)
 
