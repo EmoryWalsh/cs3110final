@@ -50,6 +50,8 @@ type plays = {
 (** Data type representing the plays made by each player*)
 
 val plays : t -> plays
+(** [plays state] gives a representation of all of the different moves
+    that have occured thus far.*)
 
 val board_state : t -> string
 (** [board_state s] creates a string representation of a tic tac toe

@@ -26,10 +26,14 @@ type winner =
 val init_board : t
 (** [init_board] is the initial state of a game of connect4. It has no
     tokens placed on the board.*)
+
 val test_board : t
-(** [test_board] is a possible played state of a game of connect4. It has some tokens placed on the board.*)
+(** [test_board] is a possible played state of a game of connect4. It
+    has some tokens placed on the board.*)
+
 val filled_col_board : t
-(** [filled_col_board] is a possible played state of a game of connect4. Column 1 is completely filled with tokens.*)
+(** [filled_col_board] is a possible played state of a game of connect4.
+    Column 1 is completely filled with tokens.*)
 
 val next_player : players -> players
 (** [next_player p] is the next player to make a move. *)
@@ -55,6 +59,7 @@ type plays = {
 (** Data type representing the plays made by each player*)
 
 val plays : t -> plays
+(** [plays state] is the plays that have occured already. *)
 
 val board_state : t -> string
 (** [board_state board] creates the string representation of an entire

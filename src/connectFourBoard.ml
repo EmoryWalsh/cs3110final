@@ -1,4 +1,3 @@
-(** Represents the different players of the game. *)
 type players =
   | B
   | R
@@ -8,17 +7,12 @@ type square =
   | Played of (players * int)
   | Nil of int
 
-(** The abstract type of values representing the game state. *)
 type t = square list list
 
-(** Raised when the board is formatted incorrectly. *)
 exception MalformedBoard
 
-(** Raised when an invalid int is given to place a piece. *)
 exception InvalidIndex of int
 
-(** [init_board] is the initial state of a game of connect4. It has no
-    tokens placed on the board.*)
 let init_board =
   [
     [ Nil 1; Nil 2; Nil 3; Nil 4; Nil 5; Nil 6; Nil 7 ];
@@ -29,6 +23,7 @@ let init_board =
     [ Nil 2; Nil 8; Nil 14; Nil 20; Nil 26; Nil 32; Nil 38 ];
     [ Nil 1; Nil 7; Nil 13; Nil 19; Nil 25; Nil 31; Nil 37 ];
   ]
+
 let test_board =
   [
     [ Nil 1; Nil 2; Nil 3; Nil 4; Nil 5; Nil 6; Nil 7 ];
@@ -36,19 +31,51 @@ let test_board =
     [ Nil 5; Nil 11; Nil 17; Nil 23; Nil 29; Nil 35; Nil 41 ];
     [ Nil 4; Nil 10; Nil 16; Nil 22; Nil 28; Nil 34; Nil 40 ];
     [ Nil 3; Nil 9; Nil 15; Nil 21; Nil 27; Nil 33; Nil 39 ];
-    [ Played(R,2); Played(B,8); Played(B,14); Nil 20; Nil 26; Played(R,32); Nil 38 ];
-    [ Played(B,1); Played(R,7); Played(R,13); Nil 19; Nil 25; Played(B,31); Nil 37 ];
+    [
+      Played (R, 2);
+      Played (B, 8);
+      Played (B, 14);
+      Nil 20;
+      Nil 26;
+      Played (R, 32);
+      Nil 38;
+    ];
+    [
+      Played (B, 1);
+      Played (R, 7);
+      Played (R, 13);
+      Nil 19;
+      Nil 25;
+      Played (B, 31);
+      Nil 37;
+    ];
   ]
- let filled_col_board = 
+
+let filled_col_board =
   [
     [ Nil 1; Nil 2; Nil 3; Nil 4; Nil 5; Nil 6; Nil 7 ];
-  [ Played(R, 6); Nil 12; Nil 18; Nil 24; Nil 30; Nil 36; Nil 42 ];
-  [ Played(B, 5); Nil 11; Nil 17; Nil 23; Nil 29; Nil 35; Nil 41 ];
-  [ Played(R, 4); Nil 10; Nil 16; Nil 22; Nil 28; Nil 34; Nil 40 ];
-  [ Played(B, 3); Nil 9; Nil 15; Nil 21; Nil 27; Nil 33; Nil 39 ];
-  [ Played(R,2); Played(B,8); Played(B,14); Nil 20; Nil 26; Played(R,32); Nil 38 ];
-  [ Played(B,1); Played(R,7); Played(R,13); Nil 19; Nil 25; Played(B,31); Nil 37 ];
-
+    [ Played (R, 6); Nil 12; Nil 18; Nil 24; Nil 30; Nil 36; Nil 42 ];
+    [ Played (B, 5); Nil 11; Nil 17; Nil 23; Nil 29; Nil 35; Nil 41 ];
+    [ Played (R, 4); Nil 10; Nil 16; Nil 22; Nil 28; Nil 34; Nil 40 ];
+    [ Played (B, 3); Nil 9; Nil 15; Nil 21; Nil 27; Nil 33; Nil 39 ];
+    [
+      Played (R, 2);
+      Played (B, 8);
+      Played (B, 14);
+      Nil 20;
+      Nil 26;
+      Played (R, 32);
+      Nil 38;
+    ];
+    [
+      Played (B, 1);
+      Played (R, 7);
+      Played (R, 13);
+      Nil 19;
+      Nil 25;
+      Played (B, 31);
+      Nil 37;
+    ];
   ]
 
 (** The type representing the result of an attempted movement. *)
@@ -56,12 +83,12 @@ type result =
   | Legal of t
   | Illegal
 
-(** Data type representing the plays made by each player*)
 type plays = {
   b : int list;
   r : int list;
   nil : int list;
 }
+(** Data type representing the plays made by each player*)
 
 (** [list_rs s] creates a list with the indices of each square that is
     an R. *)
@@ -85,8 +112,8 @@ let list_rs state =
       | _ -> raise MalformedBoard)
     filtered
 
-(** [list_bs s] creates a list with the indices of each square that is
-    a B. *)
+(** [list_bs s] creates a list with the indices of each square that is a
+    B. *)
 let list_bs state =
   let lst = List.flatten state in
   let filtered =
@@ -135,53 +162,55 @@ let piece_match square =
   | Played (B, _) -> "B"
   | Played (R, _) -> "R"
   | Nil i -> " "
-  
-(** [player_match_string p] is the string representation of a player to 
-display for game instructions. *)
+
+(** [player_match_string p] is the string representation of a player to
+    display for game instructions. *)
 let player_match_string p =
   match p with
   | B -> "Blue"
   | R -> "Red"
 
 (** [player_match_char p] is the char representation of a player to
-  display on board. *)
+    display on board. *)
 let player_match_char p =
   match p with
   | B -> 'B'
   | R -> 'R'
 
-(** [top_row_state row] creates the string representation of the top row with 
-the column numbers of a connect4 board. *)
+(** [top_row_state row] creates the string representation of the top row
+    with the column numbers of a connect4 board. *)
 let top_row_state row =
   match row with
-  | [ e1; e2; e3; e4; e5; e6; e7 ] -> 
-          "1" ^ " | " ^ "2" ^ " | " ^ "3" ^ " | " ^ "4" ^ " | " ^ "5" ^ " | "
-          ^ "6" ^ " | " ^ "7" ^ "\n"
+  | [ e1; e2; e3; e4; e5; e6; e7 ] ->
+      "1" ^ " | " ^ "2" ^ " | " ^ "3" ^ " | " ^ "4" ^ " | " ^ "5"
+      ^ " | " ^ "6" ^ " | " ^ "7" ^ "\n"
   | _ -> raise MalformedBoard
 
-(** [row_state row] creates the string representation of each row in the rest 
-of a connect4 board. *)
-let row_state row = match row with | [ e1; e2; e3; e4; e5; e6; e7 ] -> (
-  let lst_mapped = List.map piece_match row in
-  match lst_mapped with
-  | [ e1; e2; e3; e4; e5; e6; e7 ] ->
-      e1 ^  " | " ^ e2 ^ " | " ^ e3 ^ " | " ^ e4 ^ " | " ^ e5 ^ " | "
-      ^ e6 ^ " | " ^ e7 ^ "\n"
-  | _ -> raise MalformedBoard)
-| _ -> raise MalformedBoard
+(** [row_state row] creates the string representation of each row in the
+    rest of a connect4 board. *)
+let row_state row =
+  match row with
+  | [ e1; e2; e3; e4; e5; e6; e7 ] -> (
+      let lst_mapped = List.map piece_match row in
+      match lst_mapped with
+      | [ e1; e2; e3; e4; e5; e6; e7 ] ->
+          e1 ^ " | " ^ e2 ^ " | " ^ e3 ^ " | " ^ e4 ^ " | " ^ e5 ^ " | "
+          ^ e6 ^ " | " ^ e7 ^ "\n"
+      | _ -> raise MalformedBoard)
+  | _ -> raise MalformedBoard
 
-(** [board_state board] creates the string representation of an entire 
-connect4 board. *)
+(** [board_state board] creates the string representation of an entire
+    connect4 board. *)
 let board_state board =
   match board with
-  | [ r1; r2; r3; r4; r5; r6; r7;] ->
+  | [ r1; r2; r3; r4; r5; r6; r7 ] ->
       begin
         " " ^ top_row_state r1 ^ " " ^ row_state r2
-        ^ "___|___|___|___|___|___|___\n" ^ " " ^ row_state r3 
+        ^ "___|___|___|___|___|___|___\n" ^ " " ^ row_state r3
         ^ "___|___|___|___|___|___|___\n" ^ " " ^ row_state r4
-        ^ "___|___|___|___|___|___|___\n" ^" " ^ row_state r5
-        ^ "___|___|___|___|___|___|___\n" ^" " ^ row_state r6
-        ^ "___|___|___|___|___|___|___\n" ^" " ^ row_state r7
+        ^ "___|___|___|___|___|___|___\n" ^ " " ^ row_state r5
+        ^ "___|___|___|___|___|___|___\n" ^ " " ^ row_state r6
+        ^ "___|___|___|___|___|___|___\n" ^ " " ^ row_state r7
         ^ "   |   |   |   |   |   |     \n"
       end
   | _ -> raise MalformedBoard
@@ -191,7 +220,8 @@ let board_state board =
     [InvalidIndex i] if the index is out of bounds. *)
 let find_square i (state : t) =
   match state with
-  | [[ c1; c2; c3; c4; c5; c6; c7 ];
+  | [
+   [ c1; c2; c3; c4; c5; c6; c7 ];
    [ e6; e12; e18; e24; e30; e36; e42 ];
    [ e5; e11; e17; e23; e29; e35; e41 ];
    [ e4; e10; e16; e22; e28; e34; e40 ];
@@ -244,15 +274,15 @@ let find_square i (state : t) =
       else raise (InvalidIndex i)
   | _ -> raise MalformedBoard
 
-(** [square_is_open square] is a bool stating whether [square] is open (Nil) 
-or not (Player) *)
+(** [square_is_open square] is a bool stating whether [square] is open
+    (Nil) or not (Player) *)
 let square_is_open square =
   match square with
   | Nil s -> true
   | Played p -> false
 
-(** [is_column_open column state] is a bool stating whether the column labeled 
-[column] is open or not. *)
+(** [is_column_open column state] is a bool stating whether the column
+    labeled [column] is open or not. *)
 let is_column_open column state =
   if column = 1 then
     let square = find_square 6 state in
@@ -277,71 +307,70 @@ let is_column_open column state =
     square_is_open square
   else raise (InvalidIndex column)
 
-  (** [next_place_in_column col state] returns the index of the square that 
-  is the next open space within the [column] in a given [state] of the board, 
-  starting from looking at the bottom square all the way to the top square. 
-  Raises [InvalidIndex col] when [col] is out of bounds or the column is 
-  already filled up.*)
-  let next_place_in_column col state =
-  if col = 1 then 
-    (if square_is_open(find_square 1 state) then 1 
-    else if square_is_open(find_square 2 state) then 2 
-    else if square_is_open(find_square 3 state) then 3 
-    else if square_is_open(find_square 4 state) then 4 
-    else if square_is_open(find_square 5 state) then 5 
-    else 6) 
-  else if col = 2 then 
-    (if square_is_open(find_square 7 state) then 7 
-    else if square_is_open(find_square 8 state) then 8 
-    else if square_is_open(find_square 9 state) then 9 
-    else if square_is_open(find_square 10 state) then 10 
-    else if square_is_open(find_square 11 state) then 11 
-    else 12) 
-  else if col = 3 then 
-    (if square_is_open(find_square 13 state) then 13 
-    else if square_is_open(find_square 14 state) then 14 
-    else if square_is_open(find_square 15 state) then 15 
-    else if square_is_open(find_square 16 state) then 16 
-    else if square_is_open(find_square 17 state) then 17 
-    else 18) 
-  else if col = 4 then 
-    (if square_is_open(find_square 19 state) then 19 
-    else if square_is_open(find_square 20 state) then 20 
-    else if square_is_open(find_square 21 state) then 21 
-    else if square_is_open(find_square 22 state) then 22 
-    else if square_is_open(find_square 23 state) then 23 
-    else 24) 
-  else if col = 5 then 
-    (if square_is_open(find_square 25 state) then 25 
-    else if square_is_open(find_square 26 state) then 26 
-    else if square_is_open(find_square 27 state) then 27 
-    else if square_is_open(find_square 28 state) then 28 
-    else if square_is_open(find_square 29 state) then 29 
-    else 30) 
-  else if col = 6 then 
-    (if square_is_open(find_square 31 state) then 31 
-    else if square_is_open(find_square 32 state) then 32 
-    else if square_is_open(find_square 33 state) then 33 
-    else if square_is_open(find_square 34 state) then 34 
-    else if square_is_open(find_square 35 state) then 35 
-    else 36) 
+(** [next_place_in_column col state] returns the index of the square
+    that is the next open space within the [column] in a given [state]
+    of the board, starting from looking at the bottom square all the way
+    to the top square. Raises [InvalidIndex col] when [col] is out of
+    bounds or the column is already filled up.*)
+let next_place_in_column col state =
+  if col = 1 then
+    if square_is_open (find_square 1 state) then 1
+    else if square_is_open (find_square 2 state) then 2
+    else if square_is_open (find_square 3 state) then 3
+    else if square_is_open (find_square 4 state) then 4
+    else if square_is_open (find_square 5 state) then 5
+    else 6
+  else if col = 2 then
+    if square_is_open (find_square 7 state) then 7
+    else if square_is_open (find_square 8 state) then 8
+    else if square_is_open (find_square 9 state) then 9
+    else if square_is_open (find_square 10 state) then 10
+    else if square_is_open (find_square 11 state) then 11
+    else 12
+  else if col = 3 then
+    if square_is_open (find_square 13 state) then 13
+    else if square_is_open (find_square 14 state) then 14
+    else if square_is_open (find_square 15 state) then 15
+    else if square_is_open (find_square 16 state) then 16
+    else if square_is_open (find_square 17 state) then 17
+    else 18
+  else if col = 4 then
+    if square_is_open (find_square 19 state) then 19
+    else if square_is_open (find_square 20 state) then 20
+    else if square_is_open (find_square 21 state) then 21
+    else if square_is_open (find_square 22 state) then 22
+    else if square_is_open (find_square 23 state) then 23
+    else 24
+  else if col = 5 then
+    if square_is_open (find_square 25 state) then 25
+    else if square_is_open (find_square 26 state) then 26
+    else if square_is_open (find_square 27 state) then 27
+    else if square_is_open (find_square 28 state) then 28
+    else if square_is_open (find_square 29 state) then 29
+    else 30
+  else if col = 6 then
+    if square_is_open (find_square 31 state) then 31
+    else if square_is_open (find_square 32 state) then 32
+    else if square_is_open (find_square 33 state) then 33
+    else if square_is_open (find_square 34 state) then 34
+    else if square_is_open (find_square 35 state) then 35
+    else 36
   else if col = 7 then
-    (if square_is_open(find_square 37 state) then 37 
-    else if square_is_open(find_square 38 state) then 38 
-    else if square_is_open(find_square 39 state) then 39 
-    else if square_is_open(find_square 40 state) then 40 
-    else if square_is_open(find_square 41 state) then 41 
-    else 42)
+    if square_is_open (find_square 37 state) then 37
+    else if square_is_open (find_square 38 state) then 38
+    else if square_is_open (find_square 39 state) then 39
+    else if square_is_open (find_square 40 state) then 40
+    else if square_is_open (find_square 41 state) then 41
+    else 42
   else raise (InvalidIndex col)
 
-(** [next_player p] is the next player to make a move. *)
-  let next_player p =
+let next_player p =
   match p with
   | B -> R
   | R -> B
 
 (** [char_to_player c] is the player indicated by a given character*)
-  let char_to_player c =
+let char_to_player c =
   match c with
   | 'B' -> B
   | 'R' -> R
@@ -362,18 +391,17 @@ let place_piece (player : char) col state =
           (fun row ->
             List.map
               (fun el ->
-                if el = square1 then Played (p_player, next_opening) else el)
+                if el = square1 then Played (p_player, next_opening)
+                else el)
               row)
           state
       in
       Legal mapped
-    else
-      Illegal
+    else Illegal
   with
   | _ -> Illegal
 
-(** Represents the winner of the game. *)
-type winner = 
+type winner =
   | B
   | R
   | Tie
@@ -385,7 +413,7 @@ let is_subset (wins : int list list) (lst : int list) =
     List.map
       (fun row ->
         match row with
-        | [ e1; e2; e3; e4] ->
+        | [ e1; e2; e3; e4 ] ->
             if
               List.exists (fun x -> x = e1) lst
               && List.exists (fun x -> x = e2) lst
@@ -398,85 +426,84 @@ let is_subset (wins : int list list) (lst : int list) =
   in
   List.fold_left (fun acc row -> acc || row) false tf_lst
 
-  (** [is_winning_state lst] returns whether the given lst of 4 squares is a 
-  winning sequence*)
-  let is_winning_state lst =
-    let wins =
-      [
-        [1; 2; 3; 4];
-        [7; 8; 9; 10];
-        [13; 14; 15; 16];
-        [19; 20; 21; 22];
-        [25; 26; 27; 28];
-        [31; 32; 33; 34];
-        [37; 38; 39; 40];
-        [2; 3; 4; 5];
-        [8; 9; 10; 11];
-        [14; 15; 16; 17];
-        [20; 21; 22; 23];
-        [26; 27; 28; 29];
-        [32; 33; 34; 35];
-        [38; 39; 40; 41];
-        [3; 4; 5; 6];
-        [9; 10; 11; 12];
-        [15; 16; 17; 18];
-        [21; 22; 23; 24];
-        [27; 28; 29; 30];
-        [33; 34; 35; 36];
-        [39; 40; 41; 42];
-        [1; 7; 13; 19];
-        [7; 13; 19; 25];
-        [13; 19; 25; 31];
-        [19; 25; 31; 37];
-        [2; 8; 14; 20];
-        [8; 14; 20; 26];
-        [14; 20; 26; 32];
-        [20; 26; 32; 38];
-        [3; 9; 15; 21];
-        [9; 15; 21; 27];
-        [15; 21; 27; 33];
-        [21; 27; 33; 39];
-        [4; 10; 16; 22];
-        [10; 16; 22; 28];
-        [16; 22; 28; 34];
-        [22; 28; 34; 40];
-        [5; 11; 17; 23];
-        [11; 17; 23; 29];
-        [17; 23; 29; 35];
-        [23; 29; 35; 41];
-        [6; 12; 18; 24];
-        [12; 18; 24; 30];
-        [18; 24; 30; 36];
-        [24; 30; 36; 42];
-        [3; 10; 17; 24];
-        [2; 9; 16; 23];
-        [9; 16; 23; 30];
-        [1; 8; 15; 22];
-        [8; 15; 22; 29];
-        [15; 22; 29; 36];
-        [7; 14; 21; 28];
-        [14; 21; 28; 35];
-        [21; 28; 35; 42];
-        [13; 20; 27; 34];
-        [20; 27; 34; 41];
-        [19; 26; 33; 40];
-        [4; 9; 14; 19];
-        [5; 10; 15; 20];
-        [10; 15; 20; 25];
-        [6; 11; 16; 21];
-        [11; 16; 21; 26];
-        [16; 21; 26; 31];
-        [12; 17; 22; 27];
-        [17; 22; 27; 32];
-        [22; 27; 32; 37];
-        [18; 23; 28; 33];
-        [23; 28; 33; 38];
-        [24; 29; 34; 39];
-      ]
-    in
-    is_subset wins lst
-(** [is_winner state] checks whether either player has won the game in state
-    [s] and returns the player who has won or nil if neither have won. *)
+(** [is_winning_state lst] returns whether the given lst of 4 squares is
+    a winning sequence*)
+let is_winning_state lst =
+  let wins =
+    [
+      [ 1; 2; 3; 4 ];
+      [ 7; 8; 9; 10 ];
+      [ 13; 14; 15; 16 ];
+      [ 19; 20; 21; 22 ];
+      [ 25; 26; 27; 28 ];
+      [ 31; 32; 33; 34 ];
+      [ 37; 38; 39; 40 ];
+      [ 2; 3; 4; 5 ];
+      [ 8; 9; 10; 11 ];
+      [ 14; 15; 16; 17 ];
+      [ 20; 21; 22; 23 ];
+      [ 26; 27; 28; 29 ];
+      [ 32; 33; 34; 35 ];
+      [ 38; 39; 40; 41 ];
+      [ 3; 4; 5; 6 ];
+      [ 9; 10; 11; 12 ];
+      [ 15; 16; 17; 18 ];
+      [ 21; 22; 23; 24 ];
+      [ 27; 28; 29; 30 ];
+      [ 33; 34; 35; 36 ];
+      [ 39; 40; 41; 42 ];
+      [ 1; 7; 13; 19 ];
+      [ 7; 13; 19; 25 ];
+      [ 13; 19; 25; 31 ];
+      [ 19; 25; 31; 37 ];
+      [ 2; 8; 14; 20 ];
+      [ 8; 14; 20; 26 ];
+      [ 14; 20; 26; 32 ];
+      [ 20; 26; 32; 38 ];
+      [ 3; 9; 15; 21 ];
+      [ 9; 15; 21; 27 ];
+      [ 15; 21; 27; 33 ];
+      [ 21; 27; 33; 39 ];
+      [ 4; 10; 16; 22 ];
+      [ 10; 16; 22; 28 ];
+      [ 16; 22; 28; 34 ];
+      [ 22; 28; 34; 40 ];
+      [ 5; 11; 17; 23 ];
+      [ 11; 17; 23; 29 ];
+      [ 17; 23; 29; 35 ];
+      [ 23; 29; 35; 41 ];
+      [ 6; 12; 18; 24 ];
+      [ 12; 18; 24; 30 ];
+      [ 18; 24; 30; 36 ];
+      [ 24; 30; 36; 42 ];
+      [ 3; 10; 17; 24 ];
+      [ 2; 9; 16; 23 ];
+      [ 9; 16; 23; 30 ];
+      [ 1; 8; 15; 22 ];
+      [ 8; 15; 22; 29 ];
+      [ 15; 22; 29; 36 ];
+      [ 7; 14; 21; 28 ];
+      [ 14; 21; 28; 35 ];
+      [ 21; 28; 35; 42 ];
+      [ 13; 20; 27; 34 ];
+      [ 20; 27; 34; 41 ];
+      [ 19; 26; 33; 40 ];
+      [ 4; 9; 14; 19 ];
+      [ 5; 10; 15; 20 ];
+      [ 10; 15; 20; 25 ];
+      [ 6; 11; 16; 21 ];
+      [ 11; 16; 21; 26 ];
+      [ 16; 21; 26; 31 ];
+      [ 12; 17; 22; 27 ];
+      [ 17; 22; 27; 32 ];
+      [ 22; 27; 32; 37 ];
+      [ 18; 23; 28; 33 ];
+      [ 23; 28; 33; 38 ];
+      [ 24; 29; 34; 39 ];
+    ]
+  in
+  is_subset wins lst
+
 let is_winner state =
   let move_lst = plays state in
   match move_lst with

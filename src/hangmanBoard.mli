@@ -16,10 +16,14 @@ val repr_board_state : t -> string
     board [s]. *)
 
 val init_t : t
+(** [init_t] is the initial board state of a hangman board.*)
 
 val test_t : t
+(** [init_t] is a testing board state of a hangman board.*)
 
 val initialize_t : char list -> t
+(** [initialize_t chars] initalizes a board given a list of chars
+    representing the word chosen by the player. *)
 
 val guess_letter : char -> t -> result
 (** [guess_letter player i state] is the new state representation when
